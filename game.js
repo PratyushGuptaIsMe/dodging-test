@@ -3,21 +3,31 @@ export class DODGING_TEST{
         this.canvas = CANVAS;
         this.player = new PLAYER(this)
         this.keysArray = [];
+        this.elapsedTime = 0;
     }
-    update(deltatime, ctx, keysArray){
+    update(deltatime, ctx, keysArray, elapsedTime){
+        this.elapsedTime = elapsedTime;
         this.keysArray = keysArray;
         this.#draw(ctx);
         this.player.update(deltatime);
     }
     #draw(ctx){
         this.player.draw(ctx);
+        this.drawTimer(ctx);
+    }
+    drawTimer(ctx){
+        ctx.font = "40px 'Hind Siliguri', sans-serif";
+        ctx.textAlign = "left";
+        ctx.textBaseline = "top";
+        ctx.fillStyle = "grey"
+        ctx.fillText(this.elapsedTime.toFixed(2), 10, 10);
     }
 }
 class PLAYER{
     constructor(game){
         this.game = game;
-        this.x = 40;
-        this.y = 40;
+        this.x = this.game.canvas.width/2;
+        this.y = this.game.canvas.height/2;
         this.width = 15;
         this.height = 15;
         this.keysArray = this.game.keysArray;
