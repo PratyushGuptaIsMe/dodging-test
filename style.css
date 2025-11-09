@@ -1,0 +1,26 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --CANVAS-MARGIN: 10px;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mainCanvas {
+    display: block;
+    width: calc(100vw - (var(--CANVAS-MARGIN) * 2));
+    height: calc(100vh - (var(--CANVAS-MARGIN) * 2));
+    background-color: antiquewhite;
+}
