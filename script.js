@@ -1,4 +1,4 @@
-import { DODGING_TEST } from "/game.js";
+import { DODGING_TEST } from "./game.js";
 
 function resizeCanvas(){
     CANVAS.width = window.innerWidth;
