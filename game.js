@@ -91,7 +91,8 @@ class PLAYER{
         this.invincible = false;
         this.hurt = false;
         this.invisibilityTimer = 0;
-        this.invisibilityInterval = 500;
+        this.invisibilityInterval = 650;
+        this.hurtBlinkingSpeed = 150;
     }
     #hurt(deltatime){
         this.invisibilityTimer += deltatime;
@@ -136,13 +137,26 @@ class PLAYER{
     }
     draw(ctx){
         ctx.save();
-        ctx.fillStyle = "rgba(255, 0, 0, 1)";
+        ctx.lineWidth = 5;
+
         if(this.invincible){
-            ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
+            if(Math.floor(this.invisibilityTimer / this.hurtBlinkingSpeed) % 2 === 0){
+                ctx.fillStyle = "rgba(249, 93, 93, 1)";
+                ctx.strokeStyle = "rgba(253, 78, 47, 1)";
+                ctx.strokeRect(this.x, this.y, this.width, this.height);
+                ctx.fillRect(this.x, this.y, this.width, this.height);
+            }
+            return;
         }
+        
+        ctx.fillStyle = "rgb(255, 59, 59)";
+        ctx.strokeStyle = "rgb(178, 34, 34)";
+        ctx.strokeRect(this.x, this.y, this.width, this.height);
         ctx.fillRect(this.x, this.y, this.width, this.height);
+
         ctx.restore();
     }
+
 }
 
 class OBSTACLES{
