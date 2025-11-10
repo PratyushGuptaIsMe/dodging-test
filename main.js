@@ -18,6 +18,7 @@ let ctx = CANVAS.getContext("2d");
 resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
 let GAME = new DODGING_TEST(CANVAS);
+window.GAME = GAME;
 let deltatime = 0;
 let l = 0;
 let elapsedTime = 0;

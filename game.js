@@ -25,7 +25,10 @@ export class DODGING_TEST{
     }
     collisionChecks(){
         this.obstacles.forEach((obstacle) => {
-            this.#checkCollision(obstacle);
+            if(this.#checkCollision(obstacle)){
+                this.#damagePlayer(obstacle.damage);
+                this.player.invincible = true;
+            };
         })
     }
     #checkCollision(obstacle){
@@ -34,14 +37,12 @@ export class DODGING_TEST{
             this.player.x + this.player.width > obstacle.x &&
             this.player.y < obstacle.y + obstacle.length &&
             this.player.y + this.player.height > obstacle.y){
-                this.#damagePlayer(obstacle.damage);
-                this.player.invincible = true;
+                return true;
             }
         }
         if(obstacle.id === this.OBSTACLE_ID_LIST.polygon){
             if(this.#checkPolygonCollision_SAT(obstacle)){
-                this.#damagePlayer(obstacle.damage);
-                this.player.invincible = true;
+                return true;
             }
         }
         if(obstacle.id === this.OBSTACLE_ID_LIST.circle){
@@ -49,10 +50,11 @@ export class DODGING_TEST{
             (obstacle.y - Math.max(this.player.y, Math.min(obstacle.y, this.player.y + this.player.height))) ** 2)
             < (obstacle.radius ** 2)
             ){
-                this.#damagePlayer(obstacle.damage);
-                this.player.invincible = true;
+                return true;
             }
         }
+
+        return false;
     }
     #checkPolygonCollision_SAT(obstacle) {
         const rectPoints = [
