@@ -38,11 +38,7 @@ export class CIRCLE extends OBSTACLES{
 export class POLYGON extends OBSTACLES{
     constructor(game){
         super(game);
-        this.id = this.game.OBSTACLE_ID_LIST.polygon; 
-        this.x = 100;
-        this.y = 100;
-        this.length = 100;
-        
+        this.id = this.game.OBSTACLE_ID_LIST.polygon;       
         this.damage = 10;
 
         this.points = [
@@ -50,7 +46,6 @@ export class POLYGON extends OBSTACLES{
             { x: 200, y: 100 },
             { x: 200, y: 200 },
             { x: 100, y: 220 }
-        ]
-
+        ];
     }
 }
