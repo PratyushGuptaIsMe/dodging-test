@@ -1,4 +1,4 @@
-import { SQUARE_AA, SQUARE_NAA, CIRCLE } from "./obstacles.js";
+import { SQUARE, POLYGON, CIRCLE } from "./obstacles.js";
 import { PLAYER } from "./player.js";
 
 export class DODGING_TEST{
@@ -9,12 +9,12 @@ export class DODGING_TEST{
         this.elapsedTime = 0;
 
         this.OBSTACLE_ID_LIST = {
-            square_naa: 0,
-            square_aa: 1,
+            polygon: 0,
+            square: 1,
             circle: 2,
         }
 
-        this.obstacles = [new SQUARE_NAA(this)];
+        this.obstacles = [new POLYGON(this)];
     }
     update(deltatime, ctx, keysArray, elapsedTime){
         this.elapsedTime = elapsedTime;
@@ -29,10 +29,10 @@ export class DODGING_TEST{
         })
     }
     #checkCollision(obstacle){
-        if(obstacle.id === this.OBSTACLE_ID_LIST.square_aa){
+        if(obstacle.id === this.OBSTACLE_ID_LIST.square){
             
         }
-        if(obstacle.id === this.OBSTACLE_ID_LIST.square_naa){
+        if(obstacle.id === this.OBSTACLE_ID_LIST.polygon){
 
         }
         if(obstacle.id === this.OBSTACLE_ID_LIST.circle){
@@ -75,12 +75,12 @@ export class DODGING_TEST{
             ctx.fill();
             ctx.stroke();
         }
-        if(obstacle.id === this.OBSTACLE_ID_LIST.square_naa){
+        if(obstacle.id === this.OBSTACLE_ID_LIST.polygon){
             this.drawPolygon(ctx, obstacle);
         }
     }
     drawPolygon(ctx, obstacle){
-        if (!obstacle.points || !obstacle.points.length){
+        if(!obstacle.points || !obstacle.points.length){
             return;
         }
 

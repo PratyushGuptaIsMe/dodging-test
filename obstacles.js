@@ -9,36 +9,16 @@ class OBSTACLES{
     }
 }
 
-export class SQUARE_AA extends OBSTACLES{
+export class SQUARE extends OBSTACLES{
     constructor(game){
         super(game);
-        this.id = this.game.OBSTACLE_ID_LIST.square_aa; 
+        this.id = this.game.OBSTACLE_ID_LIST.square; 
 
         this.x = 100;
         this.y = 100;
         this.length = 100;
         
         this.damage = 10;
-    }
-}
-
-export class SQUARE_NAA extends OBSTACLES{
-    constructor(game){
-        super(game);
-        this.id = this.game.OBSTACLE_ID_LIST.square_naa; 
-        this.x = 100;
-        this.y = 100;
-        this.length = 100;
-        
-        this.damage = 10;
-
-        this.points = [
-            { x: 100, y: 100 },
-            { x: 200, y: 100 },
-            { x: 200, y: 200 },
-            { x: 100, y: 220 }
-        ]
-
     }
 }
 
@@ -55,3 +35,22 @@ export class CIRCLE extends OBSTACLES{
     }
 }
 
+export class POLYGON extends OBSTACLES{
+    constructor(game){
+        super(game);
+        this.id = this.game.OBSTACLE_ID_LIST.polygon; 
+        this.x = 100;
+        this.y = 100;
+        this.length = 100;
+        
+        this.damage = 10;
+
+        this.points = [
+            { x: 100, y: 100 },
+            { x: 200, y: 100 },
+            { x: 200, y: 200 },
+            { x: 100, y: 220 }
+        ]
+
+    }
+}
