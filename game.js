@@ -4,22 +4,41 @@ import { PLAYER } from "./player.js";
 export class DODGING_TEST{
     constructor(CANVAS){
         this.canvas = CANVAS;
-        this.player = new PLAYER(this)
         this.keysArray = [];
         this.elapsedTime = 0;
+        this.gameoverTextSize = 25;
+        this.maxGameoverTextSize = 120;
 
         this.OBSTACLE_ID_LIST = {
             polygon: 0,
             square: 1,
             circle: 2,
         }
+        this.maxHealth = 100;
 
+        this.player = new PLAYER(this)
         this.obstacles = [new SQUARE(this)];
     }
     update(deltatime, ctx, keysArray, elapsedTime){
-        this.elapsedTime = elapsedTime;
-        this.keysArray = keysArray;
+        if(!this.dead){
+            this.elapsedTime = elapsedTime;
+            this.keysArray = keysArray;
+        }
+        if(this.player.dead){
+            this.dead = true;
+        }
+
         this.player.update(deltatime);
+        this.obstacles.forEach((obstacle) => {
+            obstacle.update(deltatime);
+        })
+        if(this.dead){
+            if(this.gameoverTextSize < this.maxGameoverTextSize){
+                this.gameoverTextSize++;
+            }
+            this.#draw(ctx);
+            return;
+        }
         this.collisionChecks();
         this.#draw(ctx);
     }
@@ -118,8 +137,12 @@ export class DODGING_TEST{
     }
     #draw(ctx){
         this.drawTimer(ctx);
+        this.drawHPBAR(ctx);
         this.drawObstacles(ctx);
         this.player.draw(ctx);
+        if(this.dead){
+            this.#renderGameOverScreen(ctx);
+        }
     }
     drawObstacles(ctx){
         this.obstacles.forEach((obstacle) => {
@@ -160,11 +183,73 @@ export class DODGING_TEST{
         ctx.fill();
         ctx.stroke();
     }
+    #renderGameOverScreen(ctx){
+        const gameoverText = "GAME OVER!";
+        const timeText = "Time survived: " + this.elapsedTime.toFixed(2) + " seconds";
+        const gtx = 0;
+        const gty = -this.canvas.height * 0.08;
+        const stx = 0;
+        const sty = this.canvas.height * 0.08;
+
+        ctx.save();
+        ctx.lineWidth = 2;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        ctx.fillStyle = "rgb(255, 0, 0)";
+        ctx.strokeStyle = "rgb(255, 165, 0)";
+        ctx.font = `bold ${this.gameoverTextSize}px "Jersey 15", sans-serif`;
+        ctx.fillText(gameoverText, this.canvas.width / 2 + gtx, this.canvas.height / 2 + gty);
+        ctx.strokeText(gameoverText, this.canvas.width / 2 + gtx, this.canvas.height / 2 + gty);
+        ctx.fillStyle = "#ffd700";
+        ctx.strokeStyle = "#ff8c00";
+        ctx.font = `bold ${this.gameoverTextSize * 0.85}px "Jersey 15", sans-serif`;
+        ctx.fillText(timeText, this.canvas.width / 2 + stx, this.canvas.height / 2 + sty);
+        ctx.strokeText(timeText, this.canvas.width / 2 + stx, this.canvas.height / 2 + sty);
+        ctx.restore();
+    }
     drawTimer(ctx){
         ctx.font = "40px 'Hind Siliguri', sans-serif";
         ctx.textAlign = "left";
         ctx.textBaseline = "top";
         ctx.fillStyle = "grey"
         ctx.fillText(this.elapsedTime.toFixed(2), 10, 10);
+    }
+    drawHPBAR(ctx){
+        let width = 250;
+        let height = 30;
+        let x = (this.canvas.width - width) / 2;
+        let y = 10;
+
+        ctx.save();
+
+        ctx.fillStyle = "#2a2a2a";
+        ctx.fillRect(x, y, width, height);
+
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = "#000";
+        ctx.strokeRect(x, y, width, height);
+        let hpWidth;
+        let text;
+        if(this.player.health <= 0){
+            hpWidth = width * (0 / this.maxHealth);
+            text = `0 / ${this.maxHealth}`;
+        }else{
+            hpWidth = width * (this.player.health / this.maxHealth);
+            text = `${this.player.health} / ${this.maxHealth}`;
+        }
+        ctx.fillStyle = "#e63946";
+        ctx.fillRect(x, y, hpWidth, height);
+        
+        ctx.font = "bold 16px Minecraftia, sans-serif";
+        ctx.textAlign = "center";
+
+        let m = ctx.measureText(text);
+        let textY = y + height / 2 + (m.actualBoundingBoxAscent - m.actualBoundingBoxDescent) / 2;
+
+        ctx.fillStyle = "#fff";
+        ctx.fillText(text, x + width / 2, textY);
+
+        ctx.restore();
     }
 }

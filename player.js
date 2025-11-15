@@ -4,15 +4,16 @@ export class PLAYER{
         this.x = this.game.canvas.width/2;
         this.y = this.game.canvas.height/2;
         this.width = 15;
-        this.height = 15;
+        this.height = 15;1
         this.keysArray = this.game.keysArray;
         this.moveSpeed = 4;
-        this.health = 100;
+        this.health = this.game.maxHealth;
         this.invincible = false;
         this.hurt = false;
         this.invisibilityTimer = 0;
         this.invisibilityInterval = 650;
         this.hurtBlinkingSpeed = 216;
+        this.dead = false;
     }
     #hurt(deltatime){
         this.invisibilityTimer += deltatime;
@@ -23,6 +24,15 @@ export class PLAYER{
     }
     update(deltatime){
         this.keysArray = this.game.keysArray;
+
+        if(this.health <= 0){
+            this.health = 0;
+            this.dead = true;
+        }
+
+        if(this.dead){
+            return;
+        }
 
         if(this.invincible){
             this.#hurt(deltatime);

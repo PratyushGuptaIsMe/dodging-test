@@ -7,6 +7,9 @@ class OBSTACLES{
         this.Ocolor = "rgba(0, 0, 174, 1)";
         this.lineWidth = 4;
     }
+    update(deltatime){
+
+    }
 }
 
 export class SQUARE extends OBSTACLES{
@@ -20,6 +23,9 @@ export class SQUARE extends OBSTACLES{
         
         this.damage = 10;
     }
+    update(deltatime){
+        super.update(deltatime);
+    }
 }
 
 export class CIRCLE extends OBSTACLES{
@@ -32,6 +38,9 @@ export class CIRCLE extends OBSTACLES{
         this.radius = 40;
 
         this.damage = 10;
+    }
+    update(deltatime){
+        super.update(deltatime);
     }
 }
 
@@ -47,5 +56,8 @@ export class POLYGON extends OBSTACLES{
             { x: 200, y: 200 },
             { x: 100, y: 220 }
         ];
+    }
+    update(deltatime){
+        super.update(deltatime);
     }
 }
