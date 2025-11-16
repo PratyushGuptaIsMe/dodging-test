@@ -1,4 +1,4 @@
-import { SQUARE, POLYGON, CIRCLE } from "./obstacles.js";
+import { POLYGON, CIRCLE } from "./obstacles.js";
 import { PLAYER } from "./player.js";
 
 export class DODGING_TEST{
@@ -11,13 +11,12 @@ export class DODGING_TEST{
 
         this.OBSTACLE_ID_LIST = {
             polygon: 0,
-            square: 1,
-            circle: 2,
+            circle: 1,
         }
         this.maxHealth = 100;
 
         this.player = new PLAYER(this)
-        this.obstacles = [new SQUARE(this)];
+        this.obstacles = [new POLYGON(this, [{ x: 150, y: 80 },{ x: 220, y: 200 },{ x: 80, y: 200 }], 10), new CIRCLE(this, 100, 100, 100, 19)];
     }
     update(deltatime, ctx, keysArray, elapsedTime){
         if(!this.dead){
@@ -42,6 +41,7 @@ export class DODGING_TEST{
         this.collisionChecks();
         this.#draw(ctx);
     }
+
     collisionChecks(){
         this.obstacles.forEach((obstacle) => {
             if(this.#checkCollision(obstacle)){
@@ -51,14 +51,6 @@ export class DODGING_TEST{
         })
     }
     #checkCollision(obstacle){
-        if(obstacle.id === this.OBSTACLE_ID_LIST.square){
-            if(this.player.x < obstacle.x + obstacle.length &&
-            this.player.x + this.player.width > obstacle.x &&
-            this.player.y < obstacle.y + obstacle.length &&
-            this.player.y + this.player.height > obstacle.y){
-                return true;
-            }
-        }
         if(obstacle.id === this.OBSTACLE_ID_LIST.polygon){
             if(this.#checkPolygonCollision_SAT(obstacle)){
                 return true;
@@ -135,6 +127,7 @@ export class DODGING_TEST{
         }
         this.player.health -= damage;
     }
+    
     #draw(ctx){
         this.drawTimer(ctx);
         this.drawHPBAR(ctx);
@@ -146,42 +139,8 @@ export class DODGING_TEST{
     }
     drawObstacles(ctx){
         this.obstacles.forEach((obstacle) => {
-            this.#drawObstacle(obstacle, ctx);
+            obstacle.draw(ctx);
         })
-    }
-    #drawObstacle(obstacle, ctx){
-        ctx.fillStyle = obstacle.Fcolor;
-        ctx.strokeStyle = obstacle.Ocolor;
-        ctx.lineWidth = obstacle.lineWidth;
-        if(obstacle.id === this.OBSTACLE_ID_LIST.square){
-            ctx.fillRect(obstacle.x, obstacle.y, obstacle.length, obstacle.length);
-            ctx.strokeRect(obstacle.x, obstacle.y, obstacle.length, obstacle.length);
-        }
-        if(obstacle.id === this.OBSTACLE_ID_LIST.circle){
-            ctx.beginPath();
-            ctx.arc(obstacle.x, obstacle.y, obstacle.radius, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.stroke();
-        }
-        if(obstacle.id === this.OBSTACLE_ID_LIST.polygon){
-            this.drawPolygon(ctx, obstacle);
-        }
-    }
-    drawPolygon(ctx, obstacle){
-        if(!obstacle.points || !obstacle.points.length){
-            return;
-        }
-
-        ctx.beginPath();
-        ctx.moveTo(obstacle.points[0].x, obstacle.points[0].y);
-
-        for(let i = 1; i < obstacle.points.length; i++){
-            ctx.lineTo(obstacle.points[i].x, obstacle.points[i].y);
-        }
-
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
     }
     #renderGameOverScreen(ctx){
         const gameoverText = "GAME OVER!";

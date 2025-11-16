@@ -69,6 +69,14 @@ export class PLAYER{
         ctx.save();
         ctx.lineWidth = 5;
 
+        if(this.dead){
+            ctx.fillStyle = "rgba(8, 0, 255, 1)";
+            ctx.strokeStyle = "rgba(12, 3, 107, 1)";
+            ctx.strokeRect(this.x, this.y, this.width, this.height);
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+            return;
+        }
+
         if(this.invincible){
             if(Math.floor(this.invisibilityTimer / this.hurtBlinkingSpeed) % 2 === 0){
                 ctx.fillStyle = "rgba(249, 93, 93, 1)";

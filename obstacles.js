@@ -2,6 +2,7 @@ class OBSTACLES{
     constructor(game){
         this.game = game;
         this.canvas = this.game.canvas;
+        this.markedForDeletion = false;
 
         this.Fcolor = "rgba(0, 0, 255, 1)";
         this.Ocolor = "rgba(0, 0, 174, 1)";
@@ -10,54 +11,74 @@ class OBSTACLES{
     update(deltatime){
 
     }
-}
-
-export class SQUARE extends OBSTACLES{
-    constructor(game){
-        super(game);
-        this.id = this.game.OBSTACLE_ID_LIST.square; 
-
-        this.x = 100;
-        this.y = 100;
-        this.length = 100;
-        
-        this.damage = 10;
-    }
-    update(deltatime){
-        super.update(deltatime);
+    draw(ctx){
+        ctx.fillStyle = this.Fcolor;
+        ctx.strokeStyle = this.Ocolor;
+        ctx.lineWidth = this.lineWidth;
     }
 }
 
 export class CIRCLE extends OBSTACLES{
-    constructor(game){
+    constructor(game, sx, sy, radius, dmg){
         super(game);
         this.id = this.game.OBSTACLE_ID_LIST.circle;
         
-        this.x = 200;
-        this.y = 200;
-        this.radius = 40;
+        this.x = sx;
+        this.y = sy;
+        this.radius = radius;
 
-        this.damage = 10;
+        this.damage = dmg;
     }
     update(deltatime){
         super.update(deltatime);
+    }
+    draw(ctx){
+        super.draw(ctx);
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
     }
 }
 
 export class POLYGON extends OBSTACLES{
-    constructor(game){
+    constructor(game, points, dmg){
         super(game);
         this.id = this.game.OBSTACLE_ID_LIST.polygon;       
-        this.damage = 10;
+        this.damage = dmg;
 
-        this.points = [
-            { x: 100, y: 100 },
-            { x: 200, y: 100 },
-            { x: 200, y: 200 },
-            { x: 100, y: 220 }
-        ];
+        this.points = points;
+    }
+    moveX(x){
+        this.points.forEach((point) => {
+            point.x += x;
+        })
+    }
+    moveY(y){
+        this.points.forEach((point) => {
+            point.y += y;
+        })
     }
     update(deltatime){
         super.update(deltatime);
+        // this.moveX(1);
+        // this.moveY(1);
+    }
+    draw(ctx){
+        super.draw(ctx);
+        if(!this.points || !this.points.length){
+            return;
+        }
+
+        ctx.beginPath();
+        ctx.moveTo(this.points[0].x, this.points[0].y);
+
+        for(let i = 1; i < this.points.length; i++){
+            ctx.lineTo(this.points[i].x, this.points[i].y);
+        }
+
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
     }
 }
