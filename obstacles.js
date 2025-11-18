@@ -3,13 +3,14 @@ class OBSTACLES{
         this.game = game;
         this.canvas = this.game.canvas;
         this.markedForDeletion = false;
+        this.time = this.game.elapsedTime;
 
         this.Fcolor = "rgba(0, 0, 255, 1)";
         this.Ocolor = "rgba(0, 0, 174, 1)";
         this.lineWidth = 4;
     }
     update(deltatime){
-
+        this.time = this.game.elapsedTime;
     }
     draw(ctx){
         ctx.fillStyle = this.Fcolor;
@@ -50,19 +51,29 @@ export class POLYGON extends OBSTACLES{
         this.points = points;
     }
     moveX(x){
+        if(this.game.dead){
+            return;
+        }
         this.points.forEach((point) => {
             point.x += x;
         })
     }
     moveY(y){
+        if(this.game.dead){
+            return;
+        }
         this.points.forEach((point) => {
             point.y += y;
         })
     }
     update(deltatime){
         super.update(deltatime);
-        // this.moveX(1);
-        // this.moveY(1);
+        if(this.time < 10 && this.time > 0){
+            this.moveX(2);
+        }
+        if(this.time > 10 && this.time < 20){
+            this.moveX(-2);
+        }
     }
     draw(ctx){
         super.draw(ctx);

@@ -38,8 +38,8 @@ export class DODGING_TEST{
             this.#draw(ctx);
             return;
         }
-        this.collisionChecks();
         this.#draw(ctx);
+        this.collisionChecks();
     }
 
     collisionChecks(){
