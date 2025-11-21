@@ -16,7 +16,7 @@ export class DODGING_TEST{
         this.maxHealth = 100;
 
         this.player = new PLAYER(this)
-        this.obstacles = [new POLYGON(this, [{ x: 150, y: 80 },{ x: 220, y: 200 },{ x: 80, y: 200 }], 10), new CIRCLE(this, 100, 100, 100, 19)];
+        this.obstacles = [new POLYGON(this, [{ x: 150, y: 80 },{ x: 220, y: 200 },{ x: 80, y: 200 }], 10, 'side-burst', 1, 10), new CIRCLE(this, 100, 100, 100, 19)];
     }
     update(deltatime, ctx, keysArray, elapsedTime){
         if(!this.dead){

@@ -1,3 +1,5 @@
+import { PATTERNS } from "./obj-patterns.js";
+
 class OBSTACLES{
     constructor(game){
         this.game = game;
@@ -11,11 +13,19 @@ class OBSTACLES{
     }
     update(deltatime){
         this.time = this.game.elapsedTime;
+        if(!this.PATTERNS){
+            return;
+        }else{
+            this.PATTERNS.update(this);
+        }
     }
     draw(ctx){
         ctx.fillStyle = this.Fcolor;
         ctx.strokeStyle = this.Ocolor;
         ctx.lineWidth = this.lineWidth;
+    }
+    initPatterns(){
+        this.PATTERNS = new PATTERNS();
     }
 }
 
@@ -29,6 +39,7 @@ export class CIRCLE extends OBSTACLES{
         this.radius = radius;
 
         this.damage = dmg;
+        super.initPatterns();
     }
     update(deltatime){
         super.update(deltatime);
@@ -43,12 +54,14 @@ export class CIRCLE extends OBSTACLES{
 }
 
 export class POLYGON extends OBSTACLES{
-    constructor(game, points, dmg){
+    constructor(game, points, dmg, pattern, obtionalVariable1, obtionalVariable2, obtionalVariable3, obtionalVariable4){
         super(game);
         this.id = this.game.OBSTACLE_ID_LIST.polygon;       
         this.damage = dmg;
 
         this.points = points;
+        super.initPatterns();
+        this.PATTERNS.pattern(pattern, this, obtionalVariable1, obtionalVariable2, obtionalVariable3, obtionalVariable4);
     }
     moveX(x){
         if(this.game.dead){
@@ -68,12 +81,6 @@ export class POLYGON extends OBSTACLES{
     }
     update(deltatime){
         super.update(deltatime);
-        if(this.time < 10 && this.time > 0){
-            this.moveX(2);
-        }
-        if(this.time > 10 && this.time < 20){
-            this.moveX(-2);
-        }
     }
     draw(ctx){
         super.draw(ctx);
