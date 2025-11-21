@@ -9,14 +9,22 @@ export class DODGING_TEST{
         this.gameoverTextSize = 25;
         this.maxGameoverTextSize = 120;
 
+        this.patternRunning = true;
+        this.currentPattern = '';
+        this.bulletTimer = 0;
+        this.bulletInterval = 100;
+
+        this.bulletFanAngle = 90;
+        this.bulletFanBulletDirection = 1; 
+
         this.OBSTACLE_ID_LIST = {
             polygon: 0,
             circle: 1,
         }
         this.maxHealth = 100;
 
-        this.player = new PLAYER(this)
-        this.obstacles = [new POLYGON(this, [{ x: 150, y: 80 },{ x: 220, y: 200 },{ x: 80, y: 200 }], 10, 'side-burst', 1, 10), new CIRCLE(this, 100, 100, 100, 19)];
+        this.player = new PLAYER(this);
+        this.obstacles = [new POLYGON(this, [{ x: 150, y: 80 },{ x: 220, y: 200 },{ x: 80, y: 200 }], 10, 'side-burst', 1, 10)];
     }
     update(deltatime, ctx, keysArray, elapsedTime){
         if(!this.dead){
@@ -25,6 +33,13 @@ export class DODGING_TEST{
         }
         if(this.player.dead){
             this.dead = true;
+        }
+
+        if(this.patternRunning === true){
+            this.#determinePatternVairables();
+            this.#determineBulletInterval();
+            this.#determineBulletPattern();
+            this.runSpawnerPatterns(deltatime);
         }
 
         this.player.update(deltatime);
@@ -40,6 +55,47 @@ export class DODGING_TEST{
         }
         this.#draw(ctx);
         this.collisionChecks();
+    }
+
+    #determinePatternVairables(){
+        this.bulletFanAngle += this.bulletFanBulletDirection * 2;
+
+        if(this.bulletFanAngle >= 180){
+            this.bulletFanBulletDirection = -1;
+        }
+        if(this.bulletFanAngle <= 0){
+            this.bulletFanBulletDirection = 1;
+        }
+    }
+
+    #determineBulletInterval(){
+
+    }
+
+    #determineBulletPattern(){
+        this.currentPattern = 'bullet-fan-1';
+    }
+
+    spawnBullets(){
+        let newObj;
+        if(this.currentPattern === 'bullet-fan-1'){
+            let x = this.canvas.width/2;
+            let y = 0;
+            let points = [{x: x, y: y}, {x: x+10, y: y}, {x: x+10, y: y+10}, {x: x, y: y+10}];
+
+            let angle = this.bulletFanAngle;
+            let direction = 1;
+            newObj = new POLYGON(this, points, 10, 'bullet-fan', angle, x, y, direction)
+        }
+        this.obstacles.push(newObj);
+    }
+
+    runSpawnerPatterns(deltatime){
+        this.bulletTimer += deltatime;
+        if(this.bulletTimer >= this.bulletInterval){
+            this.bulletTimer = 0;
+            this.spawnBullets();
+        }
     }
 
     collisionChecks(){

@@ -51,6 +51,19 @@ export class CIRCLE extends OBSTACLES{
         ctx.fill();
         ctx.stroke();
     }
+
+    moveX(x){
+        if(this.game.dead){
+            return;
+        }
+        this.x += x;
+    }
+    moveY(y){
+        if(this.game.dead){
+            return;
+        }
+        this.y += y;
+    }
 }
 
 export class POLYGON extends OBSTACLES{
