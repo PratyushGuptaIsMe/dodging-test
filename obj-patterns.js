@@ -23,9 +23,9 @@ export class PATTERNS{
             this.patternClass = new SideBurst(obj, ov1, ov2);
         }
 
-        if(pattern === 'bullet-fan'){
-            this.currentPattern = 'bullet-fan';
-            this.patternClass = new BulletFan(obj, ov1, ov2, ov3)
+        if(pattern === 'move'){
+            this.currentPattern = 'move';
+            this.patternClass = new Moving(obj, ov1, ov2, ov3)
         }
     }
     update(obj){
@@ -59,6 +59,9 @@ class ObjectPattern{
     update(obj){
         this.globalTime = obj.time;
         this.objTime = this.globalTime - this.startTime;
+        if(this.objTime >= obj.timeAlive){
+            obj.markedForDeletion = true;
+        }
     }
 }
 
@@ -78,26 +81,23 @@ class SideBurst extends ObjectPattern{
     }
 }
 
-class BulletFan extends ObjectPattern {
+class Moving extends ObjectPattern {
     constructor(obj, ov1, ov2, ov3, ov4) {
         super(obj, ov1, ov2, ov3, ov4);
 
         this.angle = this.optionalVariable1 * (Math.PI / 180);
         this.offsetX = this.optionalVariable2;
         this.offsetY = this.optionalVariable3;
-        this.dir = this.optionalVariable4 || 1;
+        this.direction = this.optionalVariable4 || 1;
         this.obj.x += this.offsetX;
         this.obj.y += this.offsetY;
-        this.speed = obj.speed || 4;
+        
+        this.speed = 4;
     }
 
     update(obj) {
         super.update(obj);
-
-        const velX = Math.cos(this.angle) * this.speed;
-        const velY = Math.sin(this.angle) * this.speed * this.dir;
-
-        obj.moveX(velX);
-        obj.moveY(velY);
+        obj.moveX(Math.cos(this.angle) * this.speed);
+        obj.moveY(Math.sin(this.angle) * this.speed * this.direction);
     }
 }

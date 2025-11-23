@@ -46,7 +46,13 @@ export class DODGING_TEST{
         this.obstacles.forEach((obstacle) => {
             obstacle.update(deltatime);
         })
+        for(let index = this.obstacles.length - 1; index >= 0; index--){
+            if(this.obstacles[index].markedForDeletion === true){
+                this.obstacles.splice(index, 1);
+            }            
+        }
         if(this.dead){
+            this.patternRunning = false;
             if(this.gameoverTextSize < this.maxGameoverTextSize){
                 this.gameoverTextSize++;
             }
@@ -73,20 +79,32 @@ export class DODGING_TEST{
     }
 
     #determineBulletPattern(){
-        this.currentPattern = 'bullet-fan-1';
+        this.currentPattern = 'random-bullets-falling-1';
     }
 
     spawnBullets(){
         let newObj;
         if(this.currentPattern === 'bullet-fan-1'){
+            let size = 40;
             let x = this.canvas.width/2;
-            let y = 0;
-            let points = [{x: x, y: y}, {x: x+10, y: y}, {x: x+10, y: y+10}, {x: x, y: y+10}];
+            let y = -size;
+            let points = [{x: x, y: y}, {x: x + size, y: y}, {x: x + size, y: y + size}, {x: x, y: y + size}];
 
             let angle = this.bulletFanAngle;
             let direction = 1;
-            newObj = new POLYGON(this, points, 10, 'bullet-fan', angle, x, y, direction)
+            newObj = new POLYGON(this, points, 10, 'move', angle, x, y, direction)
         }
+        if(this.currentPattern === 'random-bullets-falling-1'){
+            let size = 40;
+            let x = Math.random() * this.canvas.width;
+            let y = 0;
+            let points = [{x: x, y: y}, {x: x + size, y: y}, {x: x + size, y: y + size}, {x: x, y: y + size}];
+            let angle = 90;
+            let direction = 1;
+            newObj = new POLYGON(this, points, 10, 'move', angle, x, y, direction)
+
+        }
+
         this.obstacles.push(newObj);
     }
 
@@ -136,36 +154,37 @@ export class DODGING_TEST{
             return false;
         };
 
-        const allPoints = polygon.concat(rectPoints);
+        const axes = [];
 
-        for(let i = 0; i < allPoints.length; i++){
-            const p1 = allPoints[i];
-            const p2 = allPoints[(i + 1) % allPoints.length];
+        for(let i = 0; i < polygon.length; i++){
+            const p1 = polygon[i];
+            const p2 = polygon[(i + 1) % polygon.length];
             const edge = { x: p2.x - p1.x, y: p2.y - p1.y };
-            const axis = { x: -edge.y, y: edge.x };
+            axes.push({ x: -edge.y, y: edge.x });
+        }
+
+        for (let i = 0; i < rectPoints.length; i++) {
+            const p1 = rectPoints[i];
+            const p2 = rectPoints[(i + 1) % rectPoints.length];
+            const edge = { x: p2.x - p1.x, y: p2.y - p1.y };
+            axes.push({ x: -edge.y, y: edge.x });
+        }
+
+        for(const axis of axes){
             let minR = rectPoints[0].x * axis.x + rectPoints[0].y * axis.y;
             let maxR = minR;
-
             for(let j = 1; j < rectPoints.length; j++){
                 const proj = rectPoints[j].x * axis.x + rectPoints[j].y * axis.y;
-                if(proj < minR){
-                    minR = proj;
-                }
-                if(proj > maxR){
-                    maxR = proj;
-                };
+                if(proj < minR) minR = proj;
+                if (proj > maxR) maxR = proj;
             }
 
             let minP = polygon[0].x * axis.x + polygon[0].y * axis.y;
             let maxP = minP;
             for(let j = 1; j < polygon.length; j++){
                 const proj = polygon[j].x * axis.x + polygon[j].y * axis.y;
-                if(proj < minP){
-                    minP = proj;
-                }
-                if(proj > maxP){
-                    maxP = proj;
-                }
+                if (proj < minP) minP = proj;
+                if (proj > maxP) maxP = proj;
             }
 
             if(maxR < minP || maxP < minR){

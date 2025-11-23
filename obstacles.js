@@ -5,6 +5,7 @@ class OBSTACLES{
         this.game = game;
         this.canvas = this.game.canvas;
         this.markedForDeletion = false;
+        this.timeAlive = 10;
         this.time = this.game.elapsedTime;
 
         this.Fcolor = "rgba(0, 0, 255, 1)";
