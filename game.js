@@ -1,4 +1,5 @@
 import { POLYGON, CIRCLE } from "./obstacles.js";
+
 import { PLAYER } from "./player.js";
 
 export class DODGING_TEST{
@@ -10,7 +11,7 @@ export class DODGING_TEST{
         this.maxGameoverTextSize = 120;
 
         this.patternRunning = true;
-        this.currentPattern = '';
+        this.currentPatterns = [];
         this.bulletTimer = 0;
         this.bulletInterval = 100;
 
@@ -79,12 +80,20 @@ export class DODGING_TEST{
     }
 
     #determineBulletPattern(){
-        this.currentPattern = 'random-bullets-falling-1';
+        if(!this.currentPatterns.includes("random-bullets-falling-1")){
+            this.currentPatterns.push("random-bullets-falling-1");
+        }
+        if(!this.currentPatterns.includes("bullet-fan-1")){
+            this.currentPatterns.push("bullet-fan-1");
+        }
+        if(!this.currentPatterns.includes("side-burst-1")){
+            this.currentPatterns.push("side-burst-1");
+        }
     }
 
     spawnBullets(){
         let newObj;
-        if(this.currentPattern === 'bullet-fan-1'){
+        if(this.currentPatterns.includes("bullet-fan-1")){
             let size = 40;
             let x = this.canvas.width/2;
             let y = -size;
@@ -93,8 +102,9 @@ export class DODGING_TEST{
             let angle = this.bulletFanAngle;
             let direction = 1;
             newObj = new POLYGON(this, points, 10, 'move', angle, x, y, direction)
+            this.#instantiateObstacle(newObj);
         }
-        if(this.currentPattern === 'random-bullets-falling-1'){
+        if(this.currentPatterns.includes("random-bullets-falling-1")){
             let size = 40;
             let x = Math.random() * this.canvas.width;
             let y = 0;
@@ -102,9 +112,21 @@ export class DODGING_TEST{
             let angle = 90;
             let direction = 1;
             newObj = new POLYGON(this, points, 10, 'move', angle, x, y, direction)
-
+            this.#instantiateObstacle(newObj);
         }
+        if(this.currentPatterns.includes("random-bullets-falling-1")){
+            let size = 40;
+            let x = Math.random() * this.canvas.width;
+            let y = 0;
+            let points = [{x: x, y: y}, {x: x + size, y: y}, {x: x + size, y: y + size}, {x: x, y: y + size}];
+            let angle = 90;
+            let direction = 1;
+            newObj = new POLYGON(this, points, 10, 'move', angle, x, y, direction)
+            this.#instantiateObstacle(newObj);
+        }
+    }
 
+    #instantiateObstacle(newObj){
         this.obstacles.push(newObj);
     }
 
