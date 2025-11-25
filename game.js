@@ -47,11 +47,9 @@ export class DODGING_TEST{
         this.obstacles.forEach((obstacle) => {
             obstacle.update(deltatime);
         })
-        for(let index = this.obstacles.length - 1; index >= 0; index--){
-            if(this.obstacles[index].markedForDeletion === true){
-                this.obstacles.splice(index, 1);
-            }            
-        }
+        
+        this.#deleteMarkedObstacles();
+
         if(this.dead){
             this.patternRunning = false;
             if(this.gameoverTextSize < this.maxGameoverTextSize){
@@ -216,7 +214,13 @@ export class DODGING_TEST{
 
         return true;
     }
-
+    #deleteMarkedObstacles(){
+        for(let index = this.obstacles.length - 1; index >= 0; index--){
+            if(this.obstacles[index].markedForDeletion === true){
+                this.obstacles.splice(index, 1);
+            }            
+        }
+    }
 
     #damagePlayer(damage){
         if(this.player.invincible === true){
